@@ -7,13 +7,16 @@ import (
 	"github.com/gen2brain/raylib-go/raylib"
 )
 
-func drawGameScene() {
+func drawGameScene(level int) (bool, int) {
+	log.Printf("Started new level: %d", level)
 	var cQueue []Customer
 	var tStack []int
 	balance := 0
 
+	customerCount := 0
+
 	// Push new customers into the queue.
-	go generateCustomers()
+	go generateCustomers(levelConfig[level].spawnCustomers)
 	// Handle orders, take some time to prepare each.
 	go kitchenPrepareOrders()
 
@@ -38,12 +41,19 @@ func drawGameScene() {
 			// the dish.
 			log.Printf("Removing from queue: %c-%d", cQueue[0].Order, cQueue[0].Id)
 			cQueue = cQueue[1:]
+			customerCount += 1
 
 		// Customer is done eating.
 		case c := <-doneCustomers:
 			tStack = append(tStack, c.Id)
 
 		default:
+			if customerCount == levelConfig[level].spawnCustomers {
+				log.Println("Level done")
+				rl.EndDrawing()
+				return true, balance
+			}
+
 			if (len(cQueue) < 1) {
 				rl.EndDrawing()
 				continue

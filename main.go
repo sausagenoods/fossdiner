@@ -1,6 +1,10 @@
 package main
 
-import "github.com/gen2brain/raylib-go/raylib"
+import (
+	"fmt"
+
+	"github.com/gen2brain/raylib-go/raylib"
+)
 
 func main() {
 	// Initialize assets, channels...
@@ -16,10 +20,22 @@ func main() {
 	initAudio()
 
 	gState = InGame
+	// Three levels (day): 0, 1, 2
+	level := 0
 	for !rl.WindowShouldClose() {
 		switch(gState) {
 		case InGame:
-			drawGameScene()
+			if fin, balance := drawGameScene(level); fin {
+				for !rl.IsKeyPressed(rl.KeyEnter) {
+					rl.BeginDrawing()
+					rl.ClearBackground(rl.RayWhite)
+					rl.DrawText("Day cleared!", 190, 160, 20, rl.LightGray)
+					rl.DrawText(fmt.Sprintf("balance: %d, level: %d", balance, level), 190, 200, 20, rl.LightGray)
+					rl.DrawText("Press enter to start next day.", 190, 240, 20, rl.LightGray)
+					rl.EndDrawing()
+				}
+				level++
+			}
 		}
 	}
 

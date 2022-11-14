@@ -16,10 +16,13 @@ var eatingCustomers chan Customer
 // For signalling tray addition to the stack
 var doneCustomers chan Customer
 
-func generateCustomers() {
+func generateCustomers(customerSpawnAmount int) {
 	id := 0
 	menu := []MenuOption{Kebab, Pizza, Hamburger}
 	for {
+		if id == customerSpawnAmount {
+			return
+		}
 		gen := Customer{
 			Order: menu[rand.Intn(2)],
 			Id: id,

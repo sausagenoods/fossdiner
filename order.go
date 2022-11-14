@@ -52,10 +52,10 @@ func serveOrder(c Customer, m MenuOption, b *int) {
 	if c.Order == m {
 		rl.PlaySound(cashSnd)
 		*b += 10
-		log.Println("+Balance:", b)
+		log.Println("+Balance:", *b)
 		return
 	}
 	rl.PlaySound(wrongSnd)
 	*b -= 10
-	log.Println("-Balance:", b)
+	log.Println("-Balance:", *b)
 }
