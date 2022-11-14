@@ -59,6 +59,10 @@ func drawGameScene(level int) (bool, int) {
 				continue
 			}
 			placeKitchenOrderOnKeyPress()
+
+			if orderStatus == 1 {
+				rl.DrawText("Preparing order...", 10, 600, 30, rl.DarkGray)
+			}
 		}
 
 		rl.EndDrawing()
@@ -67,11 +71,11 @@ func drawGameScene(level int) (bool, int) {
 
 func drawCustomerQueue(q []Customer) {
 	for i, v := range q {
-		rl.DrawCircleV(rl.Vector2{400, float32(400 - 70 * i)}, 30, rl.Maroon)
-		rl.DrawText(fmt.Sprintf("%c-%d", v.Order, v.Id), 400, int32(400 - 70 * i), 15, rl.LightGray)
+		rl.DrawCircleV(rl.Vector2{400, float32(400 - 90 * i)}, 40, rl.Maroon)
+		rl.DrawText(fmt.Sprintf("%c-%d", v.Order, v.Id), 372, int32(400 - 90 * i - 15), 25, rl.LightGray)
 	}
 }
 
 func drawBalance(b int) {
-	rl.DrawText(fmt.Sprintf("%d", b), 190, 200, 20, rl.LightGray)
+	rl.DrawText(fmt.Sprintf("%d", b), 190, 200, 30, rl.DarkGray)
 }

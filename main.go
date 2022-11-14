@@ -29,12 +29,12 @@ func main() {
 				for !rl.IsKeyPressed(rl.KeyEnter) {
 					rl.BeginDrawing()
 					rl.ClearBackground(rl.RayWhite)
-					rl.DrawText("Day cleared!", 190, 160, 20, rl.LightGray)
-					rl.DrawText(fmt.Sprintf("balance: %d, level: %d", balance, level), 190, 200, 20, rl.LightGray)
-					rl.DrawText("Press enter to start next day.", 190, 240, 20, rl.LightGray)
+					rl.DrawText("Day cleared!", 190, 160, 20, rl.DarkGray)
+					rl.DrawText(fmt.Sprintf("balance: %d, level: %d", balance, level), 190, 200, 20, rl.DarkGray)
+					rl.DrawText("Press enter to start next day.", 190, 240, 20, rl.DarkGray)
 					rl.EndDrawing()
 				}
-				level++
+				level += 1
 			}
 		}
 	}

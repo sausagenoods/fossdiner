@@ -21,6 +21,8 @@ var kitchenOrder chan MenuOption
 // For signalling when order is ready to serve.
 var orderReady chan MenuOption
 
+// 0 = none/done, 1 = preparing
+var orderStatus int
 func placeKitchenOrderOnKeyPress() {
 	if rl.IsKeyPressed(rl.KeyK) {
 		kitchenOrder <- Kebab
@@ -36,9 +38,10 @@ func kitchenPrepareOrders() {
 		select {
 		case o := <- kitchenOrder:
 			rl.PlaySound(tickSnd)
-
+			orderStatus = 1
 			// Take up to 5 seconds to prepare the order.
-			time.Sleep(time.Duration(rand.Intn(4) + 1) * time.Second)
+			time.Sleep(time.Duration(rand.Intn(7) + 1) * time.Second)
+			orderStatus = 0
 			// Send a signal now that the order is ready.
 			orderReady <- o
 
