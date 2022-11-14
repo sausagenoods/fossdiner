@@ -20,6 +20,9 @@ func generateCustomers(customerSpawnAmount int) {
 	id := 1
 	menu := []MenuOption{Kebab, Pizza, Hamburger}
 	for {
+		if id > customerSpawnAmount {
+			return
+		}
 		gen := Customer{
 			Order: menu[rand.Intn(3)],
 			Id: id,
@@ -28,9 +31,5 @@ func generateCustomers(customerSpawnAmount int) {
 		time.Sleep(time.Duration(rand.Intn(7) + 1) * time.Second)
 		arrivingCustomers <- gen
 		id++
-
-		if id == customerSpawnAmount {
-			return
-		}
 	}
 }

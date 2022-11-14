@@ -77,5 +77,5 @@ func drawCustomerQueue(q []Customer) {
 }
 
 func drawBalance(b int) {
-	rl.DrawText(fmt.Sprintf("%d", b), 190, 200, 30, rl.DarkGray)
+	rl.DrawText(fmt.Sprintf("Balance: %d", b), 10, 10, 30, rl.DarkGray)
 }
