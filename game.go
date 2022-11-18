@@ -14,6 +14,7 @@ func drawGameScene(level int) (bool, int) {
 
 	balance := 0
 	customerCount := 0
+	trayCount := 0
 
 	// Push new customers into the queue.
 	go generateCustomers(levelConfig[level].spawnCustomers)
@@ -72,26 +73,27 @@ func drawGameScene(level int) (bool, int) {
 			tStack = append(tStack, c.Id)
 
 		default:
-			if customerCount == levelConfig[level].spawnCustomers {
+			if customerCount == levelConfig[level].spawnCustomers &&
+			  trayCount == levelConfig[level].spawnCustomers {
 				log.Println("Level done")
 				rl.EndDrawing()
 				return true, balance
 			}
 
-			if (len(cQueue) < 1) {
-				rl.EndDrawing()
-				continue
-			}
-
+			// The player is busy preparing the order,
+			// don't respond to key press
 			if orderStatus == 1 {
 				rl.EndDrawing()
 				continue
 			}
 
-			placeKitchenOrderOnKeyPress()
-
 			if len(tStack) > 0 && rl.IsKeyPressed(rl.KeyT) {
 				tStack = tStack[:len(tStack) - 1]
+				trayCount += 1
+			}
+
+			if (len(cQueue) >= 1) {
+				placeKitchenOrderOnKeyPress()
 			}
 		}
 
