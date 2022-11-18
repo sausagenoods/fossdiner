@@ -120,12 +120,12 @@ func drawInfo(l, b int) {
 }
 
 func drawGameControls() {
-	rl.DrawRectangle(600, 470, 300, 240, rl.Green)
-	rl.DrawText("K - Serve Kebab", 605, 475, 20, rl.DarkGray)
-	rl.DrawText("P - Serve Pizza", 605, 500, 20, rl.DarkGray)
-	rl.DrawText("H - Serve Hamburger", 605, 525, 20, rl.DarkGray)
-	rl.DrawText("T - Empty tray", 605, 550, 20, rl.DarkGray)
-	rl.DrawText("Esc - Pause", 605, 575, 20, rl.DarkGray)
-	rl.DrawText("Q - Quit", 605, 600, 20, rl.DarkGray)
+	rl.DrawRectangle(580, 470, 300, 240, rl.Green)
+	rl.DrawText("K - Serve Kebab", 585, 475, 20, rl.DarkGray)
+	rl.DrawText("P - Serve Pizza", 585, 500, 20, rl.DarkGray)
+	rl.DrawText("H - Serve Hamburger", 585, 525, 20, rl.DarkGray)
+	rl.DrawText("T - Empty tray", 585, 550, 20, rl.DarkGray)
+	rl.DrawText("Esc - Pause", 585, 575, 20, rl.DarkGray)
+	rl.DrawText("Q - Quit", 585, 600, 20, rl.DarkGray)
 
 }

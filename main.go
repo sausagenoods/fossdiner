@@ -44,7 +44,7 @@ func main() {
 					rl.EndDrawing()
 				}
 				level += 1
-			} else {
+			} else if !fin {
 				for !rl.IsKeyPressed(rl.KeyEnter) {
 					rl.BeginDrawing()
 					rl.ClearBackground(rl.RayWhite)
