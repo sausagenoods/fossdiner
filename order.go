@@ -35,6 +35,10 @@ func placeKitchenOrderOnKeyPress() {
 
 func kitchenPrepareOrders() {
 	for {
+		if gOpt == Pause {
+			time.Sleep(1 * time.Millisecond)
+			continue
+		}
 		select {
 		case o := <- kitchenOrder:
 			rl.PlaySound(tickSnd)

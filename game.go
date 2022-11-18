@@ -23,8 +23,16 @@ func drawGameScene(level int) (bool, int) {
 	for {
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.RayWhite)
-		drawBalance(balance)
-		// Draw buttons
+
+		handleControlKeyPress()
+		if gOpt == Pause {
+			rl.DrawText("Paused.", 320, 240, 50, rl.DarkGray)
+			rl.DrawText("Press Esc to continue.", 120, 300, 50, rl.DarkGray)
+			rl.EndDrawing()
+			continue
+		}
+
+		drawInfo(level, balance)
 		drawCustomerQueue(cQueue)
 
 		select {
@@ -76,6 +84,7 @@ func drawCustomerQueue(q []Customer) {
 	}
 }
 
-func drawBalance(b int) {
-	rl.DrawText(fmt.Sprintf("Balance: %d", b), 10, 10, 30, rl.DarkGray)
+func drawInfo(l, b int) {
+	rl.DrawText(fmt.Sprintf("Day: %d", l + 1), 10, 10, 30, rl.DarkGray)
+	rl.DrawText(fmt.Sprintf("Balance: %d", b), 10, 40, 30, rl.DarkGray)
 }

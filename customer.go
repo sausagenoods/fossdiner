@@ -20,6 +20,10 @@ func generateCustomers(customerSpawnAmount int) {
 	id := 1
 	menu := []MenuOption{Kebab, Pizza, Hamburger}
 	for {
+		if gOpt == Pause {
+			time.Sleep(500 * time.Second)
+			continue
+		}
 		if id > customerSpawnAmount {
 			return
 		}
