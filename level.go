@@ -5,5 +5,5 @@ type levelParams struct {
 }
 
 var levelConfig = [3]levelParams {
-	{spawnCustomers: 5,}, {spawnCustomers: 10,}, {spawnCustomers: 15,},
+	{spawnCustomers: 7,}, {spawnCustomers: 10,}, {spawnCustomers: 15,},
 }

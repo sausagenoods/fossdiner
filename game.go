@@ -11,8 +11,8 @@ func drawGameScene(level int) (bool, int) {
 	log.Printf("Started new level: %d", level)
 	var cQueue []Customer
 	var tStack []int
-	balance := 0
 
+	balance := 0
 	customerCount := 0
 
 	// Push new customers into the queue.
@@ -34,17 +34,22 @@ func drawGameScene(level int) (bool, int) {
 
 		drawInfo(level, balance)
 		drawCustomerQueue(cQueue)
+		drawTrayArea(tStack)
 
 		select {
 		// New customer arrived at the diner.
 		case c := <-arrivingCustomers:
-			// Animate addition to queue
+			// Animate addition to queue.
 			log.Printf("Adding to queue: %c-%d", c.Order, c.Id)
 			cQueue = append(cQueue, c)
 
 		// Order is ready to serve to customer.
 		case c := <-orderReady:
 			serveOrder(cQueue[0], c, &balance)
+
+			// Customer will spend some time eating now.
+			go customerEat(cQueue[0])
+
 			// Remove customer from the queue now that we served
 			// the dish.
 			log.Printf("Removing from queue: %c-%d", cQueue[0].Order, cQueue[0].Id)
@@ -53,6 +58,12 @@ func drawGameScene(level int) (bool, int) {
 
 		// Customer is done eating.
 		case c := <-doneCustomers:
+			log.Printf("Has left tray: %c-%d", c.Order, c.Id)
+			if len(tStack) == 5 {
+				log.Printf("Tray space overflow!: %c-%d", c.Order, c.Id)
+				rl.EndDrawing()
+				return false, balance
+			}
 			tStack = append(tStack, c.Id)
 
 		default:
@@ -82,6 +93,14 @@ func drawCustomerQueue(q []Customer) {
 		rl.DrawCircleV(rl.Vector2{400, float32(400 - 90 * i)}, 40, rl.Maroon)
 		rl.DrawText(fmt.Sprintf("%c-%d", v.Order, v.Id), 372, int32(400 - 90 * i - 15), 25, rl.LightGray)
 	}
+}
+
+func drawTrayArea(s []int) {
+	rl.DrawRectangle(550, 30, 100, 200, rl.Yellow)
+	for i, _ := range s {
+		rl.DrawRectangle(560, int32(200 - i * 40), 80, 20, rl.DarkGray)
+	}
+
 }
 
 func drawInfo(l, b int) {

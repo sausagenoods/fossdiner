@@ -37,3 +37,9 @@ func generateCustomers(customerSpawnAmount int) {
 		id++
 	}
 }
+
+func customerEat(c Customer) {
+	// Waste some time
+	time.Sleep(time.Duration(rand.Intn(5) + 1) * time.Second)
+	doneCustomers <- c
+}
