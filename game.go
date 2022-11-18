@@ -81,8 +81,16 @@ func drawGameScene(level int) (bool, int) {
 				rl.EndDrawing()
 				continue
 			}
-			if orderStatus == 0 {
-				placeKitchenOrderOnKeyPress()
+
+			if orderStatus == 1 {
+				rl.EndDrawing()
+				continue
+			}
+
+			placeKitchenOrderOnKeyPress()
+
+			if len(tStack) > 0 && rl.IsKeyPressed(rl.KeyT) {
+				tStack = tStack[:len(tStack) - 1]
 			}
 		}
 
