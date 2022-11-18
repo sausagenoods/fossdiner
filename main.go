@@ -19,6 +19,7 @@ func main() {
 	rl.SetTargetFPS(60)
 
 	initAudio()
+	raygui.SetStyleProperty(raygui.GlobalTextFontsize, 30)
 
 	gState = MenuScreen
 	// Three levels (day): 0, 1, 2
@@ -28,8 +29,8 @@ func main() {
 		case MenuScreen:
 			rl.BeginDrawing()
 			rl.ClearBackground(rl.RayWhite)
-			rl.DrawText("Press the button to start.", 300, 180, 20, rl.DarkGray)
-			if raygui.Button(rl.NewRectangle(400, 280, 80, 20), "START") {
+			rl.DrawText("Press the button to start.", 220, 200, 30, rl.DarkGray)
+			if raygui.Button(rl.NewRectangle(350, 280, 80, 20), "START") {
 				gState = InGame
 			}
 			rl.EndDrawing()
