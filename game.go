@@ -9,8 +9,9 @@ import (
 
 func drawGameScene(level int) (bool, int) {
 	log.Printf("Started new level: %d", level)
-	var cQueue []Customer
-	var tStack []int
+
+	cQueue := newCustomerQueue()
+	tStack := newTrayStack()
 
 	balance := 0
 	customerCount := 0
@@ -34,8 +35,8 @@ func drawGameScene(level int) (bool, int) {
 		}
 
 		drawInfo(level, balance)
-		drawCustomerQueue(cQueue)
-		drawTrayArea(tStack)
+		drawCustomerQueue(cQueue.customers)
+		drawTrayArea(tStack.trays)
 		drawGameControls()
 
 		if orderStatus == 1 {
@@ -47,30 +48,31 @@ func drawGameScene(level int) (bool, int) {
 		case c := <-arrivingCustomers:
 			// Animate addition to queue.
 			log.Printf("Adding to queue: %c-%d", c.Order, c.Id)
-			cQueue = append(cQueue, c)
+			cQueue.add(c)
 
 		// Order is ready to serve to customer.
 		case c := <-orderReady:
-			serveOrder(cQueue[0], c, &balance)
+			ct := cQueue.head()
+			serveOrder(ct, c, &balance)
 
 			// Customer will spend some time eating now.
-			go customerEat(cQueue[0])
+			go customerEat(ct)
 
 			// Remove customer from the queue now that we served
 			// the dish.
-			log.Printf("Removing from queue: %c-%d", cQueue[0].Order, cQueue[0].Id)
-			cQueue = cQueue[1:]
+			log.Printf("Removing from queue: %c-%d", ct.Order, ct.Id)
+			cQueue.remove()
 			customerCount += 1
 
 		// Customer is done eating.
 		case c := <-doneCustomers:
 			log.Printf("Has left tray: %c-%d", c.Order, c.Id)
-			if len(tStack) == 5 {
+			if tStack.length() == 5 {
 				log.Printf("Tray space overflow!: %c-%d", c.Order, c.Id)
 				rl.EndDrawing()
 				return false, balance
 			}
-			tStack = append(tStack, c.Id)
+			tStack.add(c.Id)
 
 		default:
 			if customerCount == levelConfig[level].spawnCustomers &&
@@ -87,12 +89,12 @@ func drawGameScene(level int) (bool, int) {
 				continue
 			}
 
-			if len(tStack) > 0 && rl.IsKeyPressed(rl.KeyT) {
-				tStack = tStack[:len(tStack) - 1]
+			if tStack.length() > 0 && rl.IsKeyPressed(rl.KeyT) {
+				tStack.remove()
 				trayCount += 1
 			}
 
-			if (len(cQueue) >= 1) {
+			if cQueue.length() >= 1 {
 				placeKitchenOrderOnKeyPress()
 			}
 		}
