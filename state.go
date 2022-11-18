@@ -31,8 +31,12 @@ func handleControlKeyPress() {
 		gOpt ^= 1
 	}
 	if rl.IsKeyPressed(rl.KeyQ) {
-		// TODO: Implement a proper deinit function
-		rl.CloseWindow()
-		os.Exit(0)
+		quitGame()
 	}
+}
+
+func quitGame() {
+	// TODO: Implement a proper deinit function
+	rl.CloseWindow()
+	os.Exit(0)
 }
