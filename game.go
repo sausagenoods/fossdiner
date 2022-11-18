@@ -35,6 +35,7 @@ func drawGameScene(level int) (bool, int) {
 		drawInfo(level, balance)
 		drawCustomerQueue(cQueue)
 		drawTrayArea(tStack)
+		drawGameControls()
 
 		if orderStatus == 1 {
 			rl.DrawText("Preparing order...", 10, 600, 30, rl.DarkGray)
@@ -116,4 +117,15 @@ func drawTrayArea(s []int) {
 func drawInfo(l, b int) {
 	rl.DrawText(fmt.Sprintf("Day: %d", l + 1), 10, 10, 30, rl.DarkGray)
 	rl.DrawText(fmt.Sprintf("Balance: %d", b), 10, 40, 30, rl.DarkGray)
+}
+
+func drawGameControls() {
+	rl.DrawRectangle(600, 470, 300, 240, rl.Green)
+	rl.DrawText("K - Serve Kebab", 605, 475, 20, rl.DarkGray)
+	rl.DrawText("P - Serve Pizza", 605, 500, 20, rl.DarkGray)
+	rl.DrawText("H - Serve Hamburger", 605, 525, 20, rl.DarkGray)
+	rl.DrawText("T - Empty tray", 605, 550, 20, rl.DarkGray)
+	rl.DrawText("Esc - Pause", 605, 575, 20, rl.DarkGray)
+	rl.DrawText("Q - Quit", 605, 600, 20, rl.DarkGray)
+
 }
