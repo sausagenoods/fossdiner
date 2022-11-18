@@ -51,6 +51,7 @@ func main() {
 					rl.DrawText("You lose!", 190, 160, 20, rl.DarkGray)
 					rl.DrawText(fmt.Sprintf("balance: %d, day: %d", balance, level + 1), 190, 200, 20, rl.DarkGray)
 					rl.DrawText("Press enter to repeat same day.", 190, 240, 20, rl.DarkGray)
+					rl.EndDrawing()
 				}
 			}
 		}

@@ -20,10 +20,10 @@ type GameOpt int
 const (
 	Default GameOpt = 0
 	Pause GameOpt = 1
+	Preparing GameOpt = 2
 )
 
 var gOpt GameOpt
-
 
 func handleControlKeyPress() {
 	if rl.IsKeyPressed(rl.KeyEscape) {

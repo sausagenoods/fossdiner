@@ -36,7 +36,11 @@ func drawGameScene(level int) (bool, int) {
 		drawCustomerQueue(cQueue)
 		drawTrayArea(tStack)
 
+		if orderStatus == 1 {
+			rl.DrawText("Preparing order...", 10, 600, 30, rl.DarkGray)
+		}
 		select {
+
 		// New customer arrived at the diner.
 		case c := <-arrivingCustomers:
 			// Animate addition to queue.
@@ -77,10 +81,8 @@ func drawGameScene(level int) (bool, int) {
 				rl.EndDrawing()
 				continue
 			}
-			placeKitchenOrderOnKeyPress()
-
-			if orderStatus == 1 {
-				rl.DrawText("Preparing order...", 10, 600, 30, rl.DarkGray)
+			if orderStatus == 0 {
+				placeKitchenOrderOnKeyPress()
 			}
 		}
 
