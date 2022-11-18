@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gen2brain/raylib-go/raylib"
+	"github.com/gen2brain/raylib-go/raygui"
 )
 
 func main() {
@@ -19,11 +20,19 @@ func main() {
 
 	initAudio()
 
-	gState = InGame
+	gState = MenuScreen
 	// Three levels (day): 0, 1, 2
 	level := 0
 	for !rl.WindowShouldClose() {
 		switch(gState) {
+		case MenuScreen:
+			rl.BeginDrawing()
+			rl.ClearBackground(rl.RayWhite)
+			rl.DrawText("Press the button to start.", 300, 180, 20, rl.DarkGray)
+			if raygui.Button(rl.NewRectangle(400, 280, 80, 20), "START") {
+				gState = InGame
+			}
+			rl.EndDrawing()
 		case InGame:
 			if fin, balance := drawGameScene(level); fin {
 				for !rl.IsKeyPressed(rl.KeyEnter) {
