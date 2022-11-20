@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"math/rand"
 	"time"
@@ -33,23 +34,35 @@ func placeKitchenOrderOnKeyPress() {
 	}
 }
 
-func kitchenPrepareOrders() {
+func kitchenPrepareOrders(ctx context.Context) {
+	defer log.Println("kitchenPrepareOrders exit")
 	for {
 		if gOpt == Pause {
-			time.Sleep(1 * time.Millisecond)
+			time.Sleep(500 * time.Millisecond)
 			continue
 		}
 		select {
 		case o := <- kitchenOrder:
+			d := time.Duration(rand.Intn(7) + 1) * time.Second
 			rl.PlaySound(tickSnd)
 			orderStatus = 1
-			// Take up to 5 seconds to prepare the order.
-			time.Sleep(time.Duration(rand.Intn(7) + 1) * time.Second)
-			orderStatus = 0
-			// Send a signal now that the order is ready.
-			orderReady <- o
 
+			select {
+			case <-time.After(d):
+				rl.PauseSound(tickSnd)
+				orderStatus = 0
+				orderReady <- o
+				//case <-ctx.Done():
+			case <-ctx.Done():
+				rl.PauseSound(tickSnd)
+				orderStatus = 0
+				return
+			}
+
+		case <-ctx.Done():
 			rl.PauseSound(tickSnd)
+			orderStatus = 0
+			return
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"fmt"
 
@@ -8,19 +9,24 @@ import (
 )
 
 func drawGameScene(level int) (bool, int) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	log.Printf("Started new level: %d", level)
+
+	initChans()
+	defer closeChans()
 
 	cQueue := newCustomerQueue()
 	tStack := newTrayStack()
 
 	balance := 0
-	customerCount := 0
 	trayCount := 0
 
 	// Push new customers into the queue.
-	go generateCustomers(levelConfig[level].spawnCustomers)
+	go generateCustomers(ctx, levelConfig[level].spawnCustomers)
 	// Handle orders, take some time to prepare each.
-	go kitchenPrepareOrders()
+	go kitchenPrepareOrders(ctx)
 
 	for {
 		rl.BeginDrawing()
@@ -56,13 +62,12 @@ func drawGameScene(level int) (bool, int) {
 			serveOrder(ct, c, &balance)
 
 			// Customer will spend some time eating now.
-			go customerEat(ct)
+			go customerEat(ctx, ct)
 
 			// Remove customer from the queue now that we served
 			// the dish.
 			log.Printf("Removing from queue: %c-%d", ct.Order, ct.Id)
 			cQueue.remove()
-			customerCount += 1
 
 		// Customer is done eating.
 		case c := <-doneCustomers:
@@ -75,8 +80,7 @@ func drawGameScene(level int) (bool, int) {
 			tStack.add(c.Id)
 
 		default:
-			if customerCount == levelConfig[level].spawnCustomers &&
-			  trayCount == levelConfig[level].spawnCustomers {
+			if trayCount == levelConfig[level].spawnCustomers {
 				log.Println("Level done")
 				rl.EndDrawing()
 				return true, balance
