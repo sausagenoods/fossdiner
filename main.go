@@ -29,8 +29,9 @@ func main() {
 	// Initialize assets, channels...
 	rl.InitWindow(800, 640, "Fossdiner")
 	rl.SetTargetFPS(60)
-
+	rl.SetTraceLog(rl.LogTrace)
 	initAudio()
+	initImgAssets()
 	raygui.SetStyleProperty(raygui.GlobalTextFontsize, 30)
 
 	gState = MenuScreen

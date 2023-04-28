@@ -19,12 +19,20 @@
 package main
 
 import (
+	"log"
 	"context"
 	"time"
 	"math/rand"
+	"sort"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+var ToppingOptions = []string{"olives", "pickles", "salad", "corn", "ketchup", "mustard"}
+
 type Customer struct {
+	KumpirOrder []string
+	KumpirTex *rl.Image
 	Order MenuOption
 	Id int
 }
@@ -47,9 +55,37 @@ func generateCustomers(ctx context.Context, customerSpawnAmount int) {
 			return
 		}
 		d := time.Duration(rand.Intn(7) + 1) * time.Second
+
+		numOfToppings := rand.Intn(5) + 1
+		var tAvailable = make([]string, len(ToppingOptions))
+		copy(tAvailable, ToppingOptions)
+		var kumpirOrder []string
+		for i := 0; i < numOfToppings; i++ {
+			log.Println(len(tAvailable))
+			tIndex := rand.Intn(len(tAvailable))
+			kumpirOrder = append(kumpirOrder, tAvailable[tIndex])
+			tAvailable = append(tAvailable[:tIndex], tAvailable[tIndex+1:]...)
+		}
+
+		// Make sure all the toppings are visible
+		sort.Slice(kumpirOrder, func(i, j int) bool {
+			return ToppingsImg[kumpirOrder[i]].Priority < ToppingsImg[kumpirOrder[j]].Priority
+		})
+
+		// Draw toppings over the potato
+		base := rl.ImageCopy(PotatoImg)
+		for _, t := range kumpirOrder {
+			rl.ImageDraw(base, ToppingsImg[t].Img,
+				rl.NewRectangle(0, 0, float32(PotatoImg.Width), float32(PotatoImg.Height)),
+				rl.NewRectangle(0, 0, float32(PotatoImg.Width), float32(PotatoImg.Height)), rl.White)
+		}
+
+		//rl.UnloadImage(&PotatoImg)
 		gen := Customer{
 			Order: menu[rand.Intn(3)],
 			Id: id,
+			KumpirOrder: kumpirOrder,
+			KumpirTex: base,
 		}
 
 		select {

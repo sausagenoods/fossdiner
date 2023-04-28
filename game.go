@@ -126,9 +126,19 @@ func drawGameScene(level int) (bool, int) {
 }
 
 func drawCustomerQueue(q []Customer) {
+	if len(q) != 0 {
+		//for _, i := range q[0].KumpirOrder{
+		/*rl.ImageDraw(PotatoImg, ToppingsImg[i].Img,
+		rl.NewRectangle(0, 0, float32(PotatoImg.Width), float32(PotatoImg.Height)),
+		rl.NewRectangle(0, 0, float32(PotatoImg.Width), float32(PotatoImg.Height)), rl.White)
+		}*/
+		tex := rl.LoadTextureFromImage(q[0].KumpirTex)
+		rl.DrawTexture(tex, 200, 200, rl.White)
+
+	}
 	for i, v := range q {
 		rl.DrawCircleV(rl.Vector2{400, float32(400 - 90 * i)}, 40, rl.Maroon)
-		rl.DrawText(fmt.Sprintf("%c-%d", v.Order, v.Id), 372, int32(400 - 90 * i - 15), 25, rl.LightGray)
+		rl.DrawText(fmt.Sprintf("%v", v.KumpirOrder), 372, int32(400 - 90 * i - 15), 25, rl.LightGray)
 	}
 }
 
