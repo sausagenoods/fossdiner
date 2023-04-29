@@ -22,14 +22,14 @@ func initChans() {
 	arrivingCustomers = make(chan Customer)
 	eatingCustomers = make(chan Customer)
 	doneCustomers = make(chan Customer)
-	kitchenOrder = make(chan MenuOption)
-	orderReady = make(chan MenuOption)
+	ovenLoad = make(chan struct{})
+	ovenDone = make(chan struct{})
 }
 
 func closeChans() {
 	close(arrivingCustomers)
 	close(eatingCustomers)
 	close(doneCustomers)
-	close(kitchenOrder)
-	close(orderReady)
+	close(ovenLoad)
+	close(ovenDone)
 }

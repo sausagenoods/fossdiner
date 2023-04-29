@@ -27,7 +27,7 @@ import (
 
 func main() {
 	// Initialize assets, channels...
-	rl.InitWindow(800, 640, "Fossdiner")
+	rl.InitWindow(1920, 1080, "Kumpir")
 	rl.SetTargetFPS(60)
 	rl.SetTraceLog(rl.LogTrace)
 	initAudio()

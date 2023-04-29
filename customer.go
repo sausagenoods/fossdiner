@@ -33,7 +33,6 @@ var ToppingOptions = []string{"olives", "pickles", "salad", "corn", "ketchup", "
 type Customer struct {
 	KumpirOrder []string
 	KumpirTex *rl.Image
-	Order MenuOption
 	Id int
 }
 
@@ -45,7 +44,6 @@ var doneCustomers chan Customer
 
 func generateCustomers(ctx context.Context, customerSpawnAmount int) {
 	id := 1
-	menu := []MenuOption{Kebab, Pizza, Hamburger}
 	for {
 		if gOpt == Pause {
 			time.Sleep(500 * time.Millisecond)
@@ -82,7 +80,6 @@ func generateCustomers(ctx context.Context, customerSpawnAmount int) {
 
 		//rl.UnloadImage(&PotatoImg)
 		gen := Customer{
-			Order: menu[rand.Intn(3)],
 			Id: id,
 			KumpirOrder: kumpirOrder,
 			KumpirTex: base,

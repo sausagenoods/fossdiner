@@ -26,6 +26,7 @@ import (
 	"github.com/gen2brain/raylib-go/raylib"
 )
 
+
 func drawGameScene(level int) (bool, int) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -40,11 +41,12 @@ func drawGameScene(level int) (bool, int) {
 
 	balance := 0
 	trayCount := 0
+	cookedKumpirs := 0
 
 	// Push new customers into the queue.
 	go generateCustomers(ctx, levelConfig[level].spawnCustomers)
 	// Handle orders, take some time to prepare each.
-	go kitchenPrepareOrders(ctx)
+	go ovenCook(ctx)
 
 	for {
 		rl.BeginDrawing()
@@ -63,7 +65,9 @@ func drawGameScene(level int) (bool, int) {
 		drawTrayArea(tStack.trays)
 		drawGameControls()
 
-		if orderStatus == 1 {
+		rl.DrawTexture(TableTex, 0, 0, rl.White)
+		drawCookedKumpirs(cookedKumpirs)
+		if ovenStatus == 1 {
 			rl.DrawText("Preparing order...", 10, 600, 30, rl.DarkGray)
 		}
 		select {
@@ -71,27 +75,29 @@ func drawGameScene(level int) (bool, int) {
 		// New customer arrived at the diner.
 		case c := <-arrivingCustomers:
 			// Animate addition to queue.
-			log.Printf("Adding to queue: %c-%d", c.Order, c.Id)
+			log.Printf("Adding to queue: %d", c.Id)
 			cQueue.add(c)
 
 		// Order is ready to serve to customer.
-		case c := <-orderReady:
+		case <-ovenDone:
+			cookedKumpirs = 3
 			ct := cQueue.head()
-			serveOrder(ct, c, &balance)
+			serveOrder(ct, &balance)
 
 			// Customer will spend some time eating now.
 			go customerEat(ctx, ct)
 
 			// Remove customer from the queue now that we served
 			// the dish.
-			log.Printf("Removing from queue: %c-%d", ct.Order, ct.Id)
+			log.Printf("Removing from queue: %d", ct.Id)
 			cQueue.remove()
 
 		// Customer is done eating.
 		case c := <-doneCustomers:
-			log.Printf("Has left tray: %c-%d", c.Order, c.Id)
+			log.Printf("Has left tray: %d", c.Id)
+			cookedKumpirs--
 			if tStack.length() == 5 {
-				log.Printf("Tray space overflow!: %c-%d", c.Order, c.Id)
+				log.Printf("Tray space overflow!: %d", c.Id)
 				rl.EndDrawing()
 				return false, balance
 			}
@@ -106,7 +112,7 @@ func drawGameScene(level int) (bool, int) {
 
 			// The player is busy preparing the order,
 			// don't respond to key press
-			if orderStatus == 1 {
+			if ovenStatus == 1 {
 				rl.EndDrawing()
 				continue
 			}
@@ -117,12 +123,20 @@ func drawGameScene(level int) (bool, int) {
 			}
 
 			if cQueue.length() >= 1 {
-				placeKitchenOrderOnKeyPress()
+				ovenCookOnPress()
 			}
 		}
 
 		rl.EndDrawing()
 	}
+}
+
+func drawCookedKumpirs(amount int) {
+	if amount == 0 {
+		return
+	}
+	texture := rl.LoadTextureFromImage(CookedImg[amount])
+	rl.DrawTexture(texture, 520, 750, rl.White)
 }
 
 func drawCustomerQueue(q []Customer) {

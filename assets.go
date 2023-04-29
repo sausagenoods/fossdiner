@@ -3,6 +3,7 @@ package main
 import (
 	"strings"
 	"os"
+	"fmt"
 	"log"
 	"strconv"
 	"path/filepath"
@@ -16,10 +17,11 @@ type Topping struct {
 }
 
 var ToppingsImg = make(map[string]Topping)
+var CookedImg = make(map[int]*rl.Image)
 var PotatoImg = rl.LoadImage("assets/img/potato.png")
+var TableTex rl.Texture2D
 
 func initImgAssets() {
-
 	toppingFiles, err := os.ReadDir("assets/img/toppings")
 	if err != nil {
 		log.Fatal(err)
@@ -39,4 +41,11 @@ func initImgAssets() {
 		}
 		ToppingsImg[tName[0]] = topping
 	}
+
+	for i := 1; i < 4; i++ {
+		CookedImg[i] = rl.LoadImage(fmt.Sprintf("assets/img/cooked-%d.png", i))
+	}
+
+	tableImg := rl.LoadImage("assets/img/table.png")
+	TableTex = rl.LoadTextureFromImage(tableImg)
 }
